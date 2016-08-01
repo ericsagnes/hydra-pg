@@ -12,9 +12,9 @@ The idea is to have a base for nixpkgs based projects.
 ### default.nix
 
 This is the entry point of the main package set.
-The main package set consist of the main <nixpkgs> extendended with the `customPkgs` set.
+The main package set consist of the main `<nixpkgs>` extendended with the `customPkgs` set.
 
-The custom packages are accessible in a dedicated set or under `pkgs`.
+The custom packages are accessible in a dedicated set (`pkgs.customPkgs`) or under `pkgs` top level.
 
 exaple:
 
@@ -34,14 +34,17 @@ Having the custom packages in a dedicated set becomes handy when dealing with Hy
 
 ### pkgs/default.nix
 
-Is more or less the equivalent to the official nixpkgs `./pkgs/top-level/all-packages.nix`.
-
-It is the place to declare all the custom packages.
+Is more or less the equivalent to the official nixpkgs `./pkgs/top-level/all-packages.nix` for the custom packages.
 
 
 ### release.nix
 
-The beast. This file is the hardest to understand, so it is better to have some basic understanding of the nix expression language and Hydra before diving in.
+The beast. This file is the hardest to understand, so it is better to have some basic knowledge of the nix expression language and Hydra before diving in.
+
+
+### lib/default.nix
+
+This imports the custom library functions in a `custom` namespace.
 
 
 ## Playing with this repository
@@ -62,7 +65,7 @@ First, you should set some hydra server to play with. It is a piece of cake with
 
 TODO: add nixops hydra expressions and instructions
 
-In hydra, create a projet then a jobset.
+In hydra, create a projet with a jobset.
 
 For projects, the only important things are to check `Enabled` and `Visible in the list of projects`.
 
@@ -74,15 +77,17 @@ Jobsets are little more complicated to configure, but it is not that hard:
 - `Inputs` are the way to override what is passed to `release.nix`, but `release.nix` is also an input we will set 2 inputs:
     - `hydra-pg` `Git Checkout` `git://github.com/ericsagnes/hydra-pg`  (release.nix in this repo)
     - `nixpkgs` `Git Checkout` `git://github.com/nixos/nixpkgs-channels.git nixos-unstable` (official nixpkgs, is is possible to change the branch name)
-- Going back up, `Nix Expression` `release.nix` in `hydra-pg`
+- Going back up, `Nix Expression`: `release.nix` in `hydra-pg`
 
-To summarize. Hydra will evaluate `release.nix` from `hydra-pg` passing the `nixpkgs` input as a function argument. (`release.nix` is a function)
+To summarize. Hydra will evaluate `release.nix` from `hydra-pg` (this repository) passing the `nixpkgs` input as a function argument. (`release.nix` is a function)
 
-The apply changes, and the jobset will evaluate and if everything work as it should a channel wild be available in the `Channels` tab of the jobset.
+Then, apply changes and the jobset will evaluate and if everything work as it should a channel will be available in the `Channels` tab of the jobset.
 
+The generated channel can be used like any normal nix channel.
 
 
 # TODO
 
 - Figure how publish channel binary cache
 - more comments, better comments
+- add NixOS modules

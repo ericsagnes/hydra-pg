@@ -8,4 +8,9 @@ stdenv.mkDerivation {
     echo "echo trivial" > $out/bin/trivial
     chmod +x $out/bin/trivial
   '';
+
+  meta = {
+    description = "useless package";
+    maintainers = with stdenv.lib.maintainers; [ ericsagnes ];
+  };
 }
